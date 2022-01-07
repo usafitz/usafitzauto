@@ -23,18 +23,18 @@ if [[ $tool = 1 ]]
         echo "  "
         read -p "YOUR SELECTION:  " namppreference
         echo "  "
-            if [[ $nmappreference = 1 ]] 
+            if [[ $namppreference = 1 ]] 
                 then
-                echo "BEGIN COMMON NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
-                nmap -A -T4 -p- $ip
-                echo " "
-                echo "END COMMON NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
-            elif [[ $nmappreference = 2 ]] 
+                    echo "BEGIN COMMON NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
+                    nmap -A -T4 -p- $ip
+                    echo " "
+                    echo "END COMMON NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
+            elif [[ $namppreference = 2 ]] 
                 then
-                echo "BEGIN VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
-                nmap -sV -vv --script vuln $ip
-                echo "  "
-                echo "END VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
+                    echo "BEGIN VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
+                    nmap -sV -vv --script vuln $ip
+                    echo "  "
+                    echo "END VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
     else   
        exit 1
     fi
