@@ -3,15 +3,16 @@
 DAY=$(date +%u)
 DATE=$(date +%Y%b%d-%T)
 read -p "Which IP Address?  " ip
-
+echo "  "
+echo "  "
 echo "--ENTER YOUR SELECTION--"
 echo "1 NMAP " 
 echo "2 DIRB "
 echo "3 GOBUSTER "
 echo "       "
-read -p "YOUR SELECTION: " answer
+read -p "TOOL SELECTION: " tool
 
-if [[ $answer = 1 ]] ;
+if [[ $tool = 1 ]] 
     then
     # NMAP
         echo "You have selected to use NMAP"
@@ -23,20 +24,20 @@ if [[ $answer = 1 ]] ;
             if [[ $nmappreference = 1 ]] 
                 then
                 echo "BEGIN COMMON NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
-                nmap -A -T4 -p- $ip
+                # nmap -A -T4 -p- $ip
                 echo " "
                 echo "END COMMON NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
             elif [[ $nmappreference = 2 ]] 
                 then
                 echo "BEGIN VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
-                nmap -sV -vv --script vuln $ip
+                # nmap -sV -vv --script vuln $ip
                 echo "  "
                 echo "END VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
     else   
-        exit 1
+       exit 1
     fi
 
-elif [[ $answer = 2 ]] ; 
+elif [[ $tool = 2 ]]  
     then
     # DIRB
         echo "You have selected to use DIRB"
@@ -50,7 +51,7 @@ elif [[ $answer = 2 ]] ;
                     dirb http://$ip $wordfilelocation/common.txt
                     echo " "
                     echo "END DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
-            if [[ $wordfileyesno = n ]] 
+            elif [[ $wordfileyesno = n ]] 
                 then
                     echo "  " 
                     echo "BEGIN DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
@@ -58,7 +59,7 @@ elif [[ $answer = 2 ]] ;
                     echo " "
                     echo "END DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
     else
-        exit 1
+       exit 1
     fi
 
 
