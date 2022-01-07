@@ -51,15 +51,9 @@ elif [[ $answer = 2 ]] ; then
             dirb http://$ip /usr/share/wordlists/dirb/common.txt
             echo " "
             echo "END DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
-
-
-        echo BEGIN CONNECTION TO FreePBX -- {[$DAY] - $DATE}
-        echo " "
-        echo " "
-        echo BEGIN CONNECTION TO FreePBX -- {[$DAY] - $DATE} >> /home/fitsadmin/Documents/sshing/connectionlog.txt
-        echo " " >> /home/fitsadmin/Documents/sshing/connectionlog.txt
-        ssh root@192.168.15.99
-
+        else
+            exit 1
+        fi
 
 
 else
