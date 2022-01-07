@@ -48,7 +48,7 @@ elif [[ $answer = 2 ]] ; then
         if [[ $wordfileyesno = n]] ; then
             echo "  " 
             echo "BEGIN DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
-            dirb http://$ip $wordfilelocation/common.txt
+            dirb http://$ip /usr/share/wordlists/dirb/common.txt
             echo " "
             echo "END DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
 
