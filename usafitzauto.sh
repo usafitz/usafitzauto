@@ -26,8 +26,9 @@ if [[ $tool = 1 ]]
             if [[ $namppreference = 1 ]] 
                 then
                     echo "BEGIN COMMON NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
+                    echo "  "
                     nmap -A -T4 -p- $ip
-                    echo " "
+                    echo "  "
                     echo "END COMMON NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
             elif [[ $namppreference = 2 ]] 
                 then
@@ -50,6 +51,7 @@ elif [[ $tool = 2 ]]
                     read -P "Please specfiy absolute location:  "  wordfilelocation
                     echo "  " 
                     echo "BEGIN DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
+                    echo "  "
                     dirb http://$ip $wordfilelocation/common.txt
                     echo " "
                     echo "END DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
@@ -57,6 +59,7 @@ elif [[ $tool = 2 ]]
                 then
                     echo "  " 
                     echo "BEGIN DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
+                    echo "  " 
                     dirb http://$ip /usr/share/wordlists/dirb/common.txt
                     echo " "
                     echo "END DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
