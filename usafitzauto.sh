@@ -12,12 +12,32 @@ echo "  "
 while [ $exitoption = 0 ]
     do
         # TOOLS
+        # Great source for info:  https://hausec.com/pentesting-cheatsheet/#_Toc475368977
+        # list of kali installed tools: https://www.kali.org/tools/
         echo "  "
         echo "--ENTER YOUR SELECTION--"
         echo "0 EXIT PROGRAM "
         echo "1 NMAP " 
+        # scans a network or target for open ports and vulnerabilities
         echo "2 DIRB "
+        # scans a target for directories or types of files in a specified wordlist
         echo "3 GOBUSTER "
+        # Scan a website (-u http://192.168.0.155/) for directories using a wordlist (-w)
+        echo "4 NIKTO (very noisy) "
+        # Nikto is not designed as a stealthy tool. It will test a web server in the quickest time possible, and is obvious in log files or to an IPS/IDS.
+        echo "5 ENUM4LINUX"
+        # Enum4linux is a tool for enumerating information from Windows and Samba systems.
+        # Attempt to get the userlist (-U) and OS information (-o) from the target (192.168.1.200):
+        echo "6 NBTSCAN "
+        # NBTscan is a program for scanning IP networks for NetBIOS name information. 
+        echo "7 SNMPWALK "
+        #an SNMP application that uses SNMP GETNEXT requests to query a network entity for a tree of information.
+        echo "8 SHOWMOUNT "
+        # queries the mount daemon on a remote host for information about the state of the NFS server on that machine. 
+        echo "9 HYDRA "
+        # brute force attempts to log into a remote system
+        echo "99 ADMIN MENU "
+        # this is for use of listening and serving tools, such as netcat and SimpleHTTPServer
         echo "       "
         read -p "TOOL SELECTION: " tool
 
@@ -78,8 +98,6 @@ while [ $exitoption = 0 ]
                     done
                 echo "  "
                 echo "Exiting NMAP..."
-
-        # DIRB
         elif [[ $tool = 2 ]]  # DIRB
             then
                 echo "You have selected to use DIRB"
@@ -159,5 +177,30 @@ while [ $exitoption = 0 ]
         elif [[ $tool = 3 ]] # GOBUSTER
             then
                 echo "Coming Soon..."
+        elif [[ $tool = 4 ]] # NIKTO
+            then
+                echo "Coming Soon..."
+        elif [[ $tool = 5 ]] # ENUM4LINUX
+            then
+                echo "Coming Soon..."
+        elif [[ $tool = 6 ]] # NBTSCAN
+            then
+                echo "Coming Soon..."
+        elif [[ $tool = 7 ]] # SNMPWALK
+            then
+                echo "Coming Soon..."
+        elif [[ $tool = 8 ]] # SHOWMOUNT
+            then
+                echo "Coming Soon..."
+        elif [[ $tool = 9 ]] # HYDRA
+            then
+                echo "Coming Soon..."
+        elif [[ $tool = 99 ]] # ADMIN MENU
+            then
+                echo "Coming Soon..."
+        else 
+           echo "... not an option "
+           echo "exiting Program..."
+           exit 1
         fi
     done
