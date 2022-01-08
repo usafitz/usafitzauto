@@ -35,7 +35,7 @@ if [[ $tool = 1 ]] # NMAP
                         then
                             echo "BEGIN COMMON NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
                             echo "  "
-                            nmap -A -T4 -p- -oN nmap_$ip_\$DATE.txt $ip
+                            nmap -A -T4 -p- -oN nmap_$ip\_$DATE.txt $ip
                             echo "  "
                             echo "END COMMON NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
                             echo "  "
