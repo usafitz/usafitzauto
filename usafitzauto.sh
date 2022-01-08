@@ -119,7 +119,7 @@ while [ $exitoption = 0 ]
                                     echo "-p PROXY: localhost:8080"
                                     echo "  "
                                     echo "  " 
-                                    dirb http://$ip files/dirb/common.txt -N 302 -w -v -o output_files/dirb_$ip\_$DATE.txt
+                                    dirb http://$ip files/dirb/common.txt -N 302 -w -v -o output_files/dirb_massive_$ip\_$DATE.txt
                                     echo " "
                                     echo "END DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
                                     echo "  "
