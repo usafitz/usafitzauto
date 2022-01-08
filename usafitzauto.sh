@@ -3,6 +3,10 @@
 DAY=$(date +%u)
 DATE=$(date +%Y%b%d-%T)
 nmapon=1
+dirbon=1
+
+echo $nmapon
+echo $dirbon
 
 read -p "Which IP Address?  " ip
 echo "  "
@@ -18,7 +22,8 @@ if [[ $tool = 1 ]] # NMAP
     then
         echo "You have selected to use NMAP"
         echo "  "
-        while [ nmapon = 1 ]
+        echo "nmapon = $nmapon"
+        while [ $nmapon = 1 ]
             do 
                 echo "Which type of scan would you like?"
                 echo "1 Common & Popular"
@@ -62,7 +67,8 @@ elif [[ $tool = 2 ]]  # DIRB
     then
         echo "You have selected to use DIRB"
         echo "  "
-        while [ dirbon = 1 ]
+        echo "dirbon = $dirbon"
+        while [ $dirbon = 1 ]
             do
                 echo "Do you have a specific wordfile to use?"
                 read -p "YOUR SELECTION [y/n]:  " wordfileyesno
