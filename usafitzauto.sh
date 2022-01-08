@@ -47,22 +47,28 @@ while [ $exitoption = 0 ]
                                     echo "  "
                                     echo "END VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
                                     echo "  "
+                                    nmapon=0
                             else
                                 echo "... not an option"
                                 echo "exiting script..."
-                                exit 1
+                                nmapon=0
                             fi  
-                        read -p "Would you like to run another NMAP scan? [y/n]:  " runanswer
+                        read -p "Would you like to run a vulnerability NMAP scan? [y/n]:  " runanswer
                             if [ $runanswer = y ] # RUN NMAP AGAIN
                                 then
-                                    nmapon=1
+                                    echo "BEGIN VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
+                                    nmap -sV -vv --script vuln -oN output_files/nmap_vuln_$ip\_$DATE.txt $ip
+                                    echo "  "
+                                    echo "END VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
+                                    echo "  "
+                                    nmapon=0
                             elif [ $runanswer = n ] # EXIT NMAP
                                 then   
                                     nmapon=0
                             else  
                                 echo "... not an option"
-                                echo "exiting script..." 
-                                exit 1
+                                echo "exiting NMAP ..." 
+                                nmapon=0
                             fi
                         echo "  " 
                     done
@@ -84,7 +90,7 @@ while [ $exitoption = 0 ]
                                     read -P "Please specfiy absolute location and file:  "  wordfile
                                     echo "  " 
                                     echo "BEGIN DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "DEFAULT:  dirb http://$ip $wordfile -N 302 -w -v -o output_files/dirb_$ip\_$DATE.txt"
+                                    echo "DEFAULT:  dirb http://$ip $wordfile -w -o output_files/dirb_$ip\_$DATE.txt"
                                     echo "  "
                                     echo "Other options include:  "
                                     echo "-W EXTENSIONS_LIST: (.php) | (.php) [NUM = 1]"
@@ -98,7 +104,7 @@ while [ $exitoption = 0 ]
                                     echo "-p PROXY: localhost:8080"
                                     echo "  "
                                     echo "  "
-                                    dirb http://$ip $wordfile -N 302 -w -v -o output_files/dirb_$ip\_$DATE.txt
+                                    dirb http://$ip $wordfile -w -o output_files/dirb_$ip\_$DATE.txt
                                     echo " "
                                     echo "END DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
                                     echo " "
@@ -106,7 +112,7 @@ while [ $exitoption = 0 ]
                                 then
                                     echo "  " 
                                     echo "BEGIN DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "DEFAULT:  http://$ip files/dirb/common.txt -N 302 -w -v -o output_files/dirb_$ip\_$DATE.txt"
+                                    echo "DEFAULT:  http://$ip files/dirb/common.txt -w -o output_files/dirb_$ip\_$DATE.txt"
                                     echo "  "
                                     echo "Other options include:  "
                                     echo "-W EXTENSIONS_LIST: (.php) | (.php) [NUM = 1]"
@@ -120,21 +126,21 @@ while [ $exitoption = 0 ]
                                     echo "-p PROXY: localhost:8080"
                                     echo "  "
                                     echo "  " 
-                                    dirb http://$ip files/dirb/common.txt -N 302 -w -v -o output_files/dirb_massive_$ip\_$DATE.txt
+                                    dirb http://$ip files/dirb/common.txt -w -o output_files/dirb_$ip\_$DATE.txt
                                     echo " "
                                     echo "END DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
                                     echo "  "
                             else
                                 echo "... not an option"
-                                echo "exiting script..."
-                                exit 1
+                                echo "exiting DIRB ..."
+                                dirbon=0
                             fi
                         echo "  "
                         echo "  "
                         read -p "Would you like to run a massive DIRB scan? [y/n]:  " massivedirb
                             if [[ $massivedirb = y ]] # RUN MASSIVE DIRB SCAN
                                 then
-                                    dirb http://$ip files/dirb/*.txt -N 302 -w -v -o output_files/dirb_$ip\_$DATE.txt
+                                    dirb http://$ip files/dirb/*.txt -w -o output_files/dirb_massive_$ip\_$DATE.txt
                                     dirbon=0
                             elif [[ $massivedirb = n ]] # EXIT DIRB
                                 then   
@@ -142,7 +148,7 @@ while [ $exitoption = 0 ]
                             else   
                                 echo "... not an option"
                                 echo "exiting script..."
-                                exit 1
+                                dirbon=0
                             fi
                     echo "  "
                     done
