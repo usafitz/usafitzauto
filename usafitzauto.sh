@@ -35,15 +35,17 @@ if [[ $tool = 1 ]] # NMAP
                         then
                             echo "BEGIN COMMON NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
                             echo "  "
-                            nmap -A -T4 -p- $ip
+                            nmap -A -T4 -p- -oG nmap_$ip_$DATE.txt $ip
                             echo "  "
                             echo "END COMMON NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
+                            echo "  "
                     elif [[ $namppreference = 2 ]] 
                         then
                             echo "BEGIN VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
-                            nmap -sV -vv --script vuln $ip
+                            nmap -sV -vv --script vuln -oG nmap_$ip_$DATE.txt $ip
                             echo "  "
                             echo "END VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
+                            echo "  "
                     else
                         exit 1
                     fi  
@@ -82,6 +84,7 @@ elif [[ $tool = 2 ]]  # DIRB
                             dirb http://$ip $wordfile
                             echo " "
                             echo "END DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
+                            echo " "
                     elif [[ $wordfileyesno = n ]] 
                         then
                             echo "  " 
@@ -90,6 +93,7 @@ elif [[ $tool = 2 ]]  # DIRB
                             dirb http://$ip files/dirb/common.txt
                             echo " "
                             echo "END DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
+                            echo "  "
                     else
                         echo "... not an option"
                         echo "exiting script..."
