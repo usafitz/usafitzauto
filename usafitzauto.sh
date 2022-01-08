@@ -47,7 +47,7 @@ if [[ $tool = 1 ]] # NMAP
                     else
                         exit 1
                     fi  
-                read -P "Would you like to run another NMAP scan? [y/n]:  " runanswer
+                read -p "Would you like to run another NMAP scan? [y/n]:  " runanswer
                     if [ runanswer = y ]
                         then
                             nmapon = 1
@@ -94,7 +94,7 @@ elif [[ $tool = 2 ]]  # DIRB
                         echo "exiting script..."
                         exit 1
                     fi
-                read -P "Would you like to run another DIRB scan? [y/n]:  " runanswer
+                read -p "Would you like to run another DIRB scan? [y/n]:  " runanswer
                     if [ runanswer = y ]
                         then
                             dirbon = 1
