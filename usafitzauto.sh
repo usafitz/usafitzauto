@@ -48,10 +48,10 @@ if [[ $tool = 1 ]] # NMAP
                         exit 1
                     fi  
                 read -p "Would you like to run another NMAP scan? [y/n]:  " runanswer
-                    if [ runanswer = y ]
+                    if [ $runanswer = y ]
                         then
                             nmapon = 1
-                    elif [ runanswer = n ]
+                    elif [ $runanswer = n ]
                         then   
                             nmapon = 0
                     else  
@@ -95,10 +95,10 @@ elif [[ $tool = 2 ]]  # DIRB
                         exit 1
                     fi
                 read -p "Would you like to run another DIRB scan? [y/n]:  " runanswer
-                    if [ runanswer = y ]
+                    if [ $runanswer = y ]
                         then
                             dirbon = 1
-                    elif [ runanswer = n ]
+                    elif [ $runanswer = n ]
                         then   
                             dirbon = 0
                     else   
