@@ -53,12 +53,13 @@ if [[ $tool = 1 ]] # NMAP
                             nmapon = 1
                     elif [ $runanswer = n ]
                         then   
-                            nmapon = 0
+                            $nmapon = 0
                     else  
                         echo "... not an option"
                         echo "exiting script..." 
                         exit 1
                     fi
+            echo "  " 
             done
             echo "  "
             echo "Exiting script..."
@@ -100,10 +101,11 @@ elif [[ $tool = 2 ]]  # DIRB
                             dirbon = 1
                     elif [ $runanswer = n ]
                         then   
-                            dirbon = 0
+                            $dirbon = 0
                     else   
                         exit 1
                     fi
+            echo "  "
             done
             echo "  "
             echo "Exiting script..."
