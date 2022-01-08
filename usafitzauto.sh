@@ -11,6 +11,16 @@ echo "  "
 
 while [ $exitoption = 0 ]
     do
+        # RESET ALL THE TOOLS TO ON (AVAILABLE)
+        nmapon=1
+        dirbon=1
+        gobusteron=1
+        niktoon=1
+        enum4linuxon=1
+        nbtscanon=1
+        snmpwalkon=1
+        showounton=1
+        hydraon=1
         # TOOLS
         # Great source for info:  https://hausec.com/pentesting-cheatsheet/#_Toc475368977
         # list of kali installed tools: https://www.kali.org/tools/
@@ -51,12 +61,16 @@ while [ $exitoption = 0 ]
                 while [ $nmapon = 1 ] # RUN NMAP UNTIL QUIT
                     do 
                         echo "Which type of scan would you like?"
-                        echo "1 Common & Popular"
-                        echo "2 High Enumeration"
+                        echo "0 Back to main menu "
+                        echo "1 Common & Popular "
+                        echo "2 High Enumeration "
                         echo "  "
                         read -p "YOUR SELECTION:  " namppreference
                         echo "  "
-                            if [[ $namppreference = 1 ]] # COMMON NMAP SCAN
+                            if [[ $namppreference = 0 ]] # COMMON NMAP SCAN
+                                then
+                                    nmapon=0
+                            elif [[ $namppreference = 1 ]] # COMMON NMAP SCAN
                                 then
                                     echo "BEGIN COMMON NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
                                     echo "  "
@@ -64,6 +78,7 @@ while [ $exitoption = 0 ]
                                     echo "  "
                                     echo "END COMMON NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
                                     echo "  "
+                                    nmapon=0
                             elif [[ $namppreference = 2 ]] # VULNERABILITY NMAP SCAN
                                 then
                                     echo "BEGIN VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
@@ -77,24 +92,7 @@ while [ $exitoption = 0 ]
                                 echo "exiting NMAP ..."
                                 nmapon=0
                             fi  
-                        read -p "Would you like to run a vulnerability NMAP scan? [y/n]:  " runanswer
-                            if [ $runanswer = y ] # RUN NMAP AGAIN
-                                then
-                                    echo "BEGIN VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    nmap -sV -vv --script vuln -oN output_files/nmap_vuln_$ip\_$DATE.txt $ip
-                                    echo "  "
-                                    echo "END VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "  "
-                                    nmapon=0
-                            elif [ $runanswer = n ] # EXIT NMAP
-                                then   
-                                    nmapon=0
-                            else  
-                                echo "... not an option"
-                                echo "exiting NMAP ..." 
-                                nmapon=0
-                            fi
-                        echo "  " 
+                    echo "  " 
                     done
                 echo "  "
                 echo "Exiting NMAP..."
@@ -105,11 +103,19 @@ while [ $exitoption = 0 ]
                 while [ $dirbon = 1 ] # RUN DIRB UNTIL QUIT
                     do
                         echo "Do you have a specific wordfile to use?"
+                        echo "Which type of scan would you like?"
+                        echo "0 Back to main menu "
+                        echo "1 Specify your own wordlist "
+                        echo "2 Default scan (quickest)"
+                        echo "3 Massive wordlist scan (long duration) "
                         echo "  "
-                        read -p "YOUR SELECTION [y/n]:  " wordfileyesno
-                            if [[ $wordfileyesno = y ]] # SPECIFIC WORDFILE ENTRY AND RUN
+                        read -p "YOUR SELECTION:  " dirbpreference
+                            if [[ $dirbpreference = 0 ]] # EXIT DIRB
                                 then
-                                    read -P "Please specfiy absolute location and file:  "  wordfile
+                                    dirbon=0
+                            elif [[ $dirbpreference = 1 ]] # SPECIFIC WORDFILE ENTRY AND RUN
+                                then
+                                    read -p "Please specfiy absolute location and file:  "  wordfile
                                     echo "  " 
                                     echo "BEGIN DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
                                     echo "DEFAULT:  dirb http://$ip $wordfile -w -o output_files/dirb_$ip\_$DATE.txt"
@@ -130,7 +136,8 @@ while [ $exitoption = 0 ]
                                     echo " "
                                     echo "END DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
                                     echo " "
-                            elif [[ $wordfileyesno = n ]] # DEFAULT DIRB
+                                    dirbon=0
+                            elif [[ $dirbpreference = 2 ]] # DEFAULT DIRB
                                 then
                                     echo "  " 
                                     echo "BEGIN DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
@@ -152,27 +159,32 @@ while [ $exitoption = 0 ]
                                     echo " "
                                     echo "END DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
                                     echo "  "
+                                    dirbon=0
+                            elif [[ $dirbpreference = 3 ]] # MASSIVE WORDLIST SCAN
+                                then
+                                    echo "  "
+                                    echo "BEGIN DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
+                                    echo "DEFAULT:  dirb http://$ip files/dirb/*.txt -w -o output_files/dirb_massive_$ip\_$DATE.txt"
+                                    echo "  "
+                                    echo "Other options include:  "
+                                    echo "-W EXTENSIONS_LIST: (.php) | (.php) [NUM = 1]"
+                                    echo "-H ADDED HEADERS (LIKE .php)"
+                                    echo "-r OPTION: Not Recursive"
+                                    echo "-z SPEED_DELAY: 100 milliseconds"
+                                    echo "-v OPTION: Show Not Existent Pages"
+                                    echo "-N OPTION: Ignoring NOT_FOUND code -> 302"
+                                    echo "-w OPTION: Not Stopping on warning messages"
+                                    echo "-u admin:admin AUTHORIZATION: admin:admin (authentication)"
+                                    echo "-p PROXY: localhost:8080"
+                                    echo "  "
+                                    echo "  " 
+                                    dirb http://$ip files/dirb/*.txt -w -o output_files/dirb_massive_$ip\_$DATE.txt
+                                    dirbon=0
                             else
                                 echo "... not an option"
                                 echo "exiting DIRB ..."
                                 dirbon=0
                             fi
-                        echo "  "
-                        echo "  "
-                        read -p "Would you like to run a massive DIRB scan? [y/n]:  " massivedirb
-                            if [[ $massivedirb = y ]] # RUN MASSIVE DIRB SCAN
-                                then
-                                    dirb http://$ip files/dirb/*.txt -w -o output_files/dirb_massive_$ip\_$DATE.txt
-                                    dirbon=0
-                            elif [[ $massivedirb = n ]] # EXIT DIRB
-                                then   
-                                    dirbon=0
-                            else   
-                                echo "... not an option"
-                                echo "exiting DIRB ..."
-                                dirbon=0
-                            fi
-                    echo "  "
                     done
         elif [[ $tool = 3 ]] # GOBUSTER
             then
@@ -199,8 +211,7 @@ while [ $exitoption = 0 ]
             then
                 echo "Coming Soon..."
         else 
-           echo "... not an option "
-           echo "exiting Program..."
-           exit 1
+           echo "Plesae enter a valid option... "
+           echo "  "
         fi
     done
