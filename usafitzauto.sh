@@ -6,11 +6,12 @@ nmapon=1
 dirbon=1
 exitoption=0
 
+read -p "Which IP Address?  " ip
+echo "  "
+
 while [ $exitoption = 0 ]
     do
         # TOOLS
-        read -p "Which IP Address?  " ip
-        echo "  "
         echo "  "
         echo "--ENTER YOUR SELECTION--"
         echo "1 NMAP " 
