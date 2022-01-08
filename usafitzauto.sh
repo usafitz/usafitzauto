@@ -188,13 +188,122 @@ while [ $exitoption = 0 ]
                     done
         elif [[ $tool = 3 ]] # GOBUSTER
             then
-                echo "Coming Soon..."
+                echo "You have selected to use GOBUSTER"
+                echo "  "
+                while [ $gobusteron = 1 ] # RUN DIRB UNTIL QUIT
+                    do
+                        echo "Which type of scan would you like?"
+                        echo "0 Back to main menu "
+                        echo "1 Directory scan "
+                        echo "2 VHOSTS scan"
+                        echo "  "
+                        read -p "YOUR SELECTION:  " gobusterpreference
+                            if [[ $gobusterpreference = 0 ]] # EXIT GOBUSTER
+                                then
+                                    gobusteron=0
+                            elif [[ $gobusterpreference = 1 ]] # DEFAULT GOBUSTER SCAN
+                                then
+                                    echo "  "
+                                    echo "BEGIN GOBUSTER SCAN OF $ip -- {[$DAY] - $DATE}"
+                                    echo "DEFAULT:  gobuster dir -u http://$ip -w files/dirb/directory-list-2.3-medium.txt"
+                                    echo "  "
+                                    gobuster dir -u http://$ip -w files/dirb/directory-list-2.3-medium.txt -o gobuster_$ip\_$DATE.txt.txt
+                                    echo " "
+                                    echo "END GOBUSTER SCAN OF $ip -- {[$DAY] - $DATE}"
+                                    echo "  "
+                                    gobusteron=0
+                            elif [[ $gobusterpreference = 2 ]] # VHOSTS GOBUSTER SCAN
+                                then
+                                    echo "  "
+                                    echo "BEGIN GOBUSTER VHOSTS SCAN OF $ip -- {[$DAY] - $DATE}"
+                                    echo "DEFAULT:  gobuster vhost -v -w files/dirb/subdomains-top1million-5000.txt -u http://$ip -o gobuster_vhosts_$ip\_$DATE.txt.txt"
+                                    echo "  "
+                                    gobuster vhost -v -w files/dirb/subdomains-top1million-5000.txt -u http://$ip -o gobuster_vhosts_$ip\_$DATE.txt.txt
+                                    echo " "
+                                    echo "END GOBUSTER VHOSTS SCAN OF $ip -- {[$DAY] - $DATE}"
+                                    echo "  "
+                                    gobusteron=0
+                            else
+                                echo "... not an option"
+                                echo "exiting GOBUSTER ..."
+                                gobusteron=0
+                            fi
+                    done
         elif [[ $tool = 4 ]] # NIKTO
             then
-                echo "Coming Soon..."
+                echo "  "
+                echo "BEGIN NIKTO SCAN OF $ip -- {[$DAY] - $DATE}"
+                echo "DEFAULT:  nikto -h $ip -o output_files/nikto_$ip\_$DATE.txt"
+                echo "  "
+                nikto -h $ip -o output_files/nikto_$ip\_$DATE.txt
+                echo " "
+                echo "END NIKTO SCAN OF $ip -- {[$DAY] - $DATE}"
+                echo "  "
         elif [[ $tool = 5 ]] # ENUM4LINUX
             then
-                echo "Coming Soon..."
+                while [ $enum4linuxon = 1 ] # RUN ENUM4LINUX UNTIL QUIT
+                    do
+                        echo "Do you have a specific wordfile to use?"
+                        echo "Which type of scan would you like?"
+                        echo "0 Back to main menu "
+                        echo "1 Default scan (quickest) "
+                        echo "2 Full enumeration (noisy and long duration)"
+                        echo "3 Use known credentials "
+                        echo "  "
+                        read -p "YOUR SELECTION:  " enum4linuxpreference
+                            if [[ $enum4linuxpreference = 0 ]] # EXIT ENUM4LINUX
+                                then
+                                    enum4linuxon=0
+                            elif [[ $enum4linuxpreference = 1 ]] # DEFAULT ENUM4LINUX SCAN
+                                then
+                                    echo "  "
+                                    echo "BEGIN ENUM4LINUX SCAN OF $ip -- {[$DAY] - $DATE}"
+                                    echo "DEFAULT:  enum4linux -v $ip >> output_files/enum4linux_$ip\_$DATE.txt"
+                                    echo "  "
+                                    echo "Standby ... your output wile is output_files/enum4linux_$ip\_$DATE.txt"
+                                    echo "  "
+                                    enum4linux -v $ip >> output_files/enum4linux_$ip\_$DATE.txt
+                                    tail -50 output_files/enum4linux_$ip\_$DATE.txt
+                                    echo " "
+                                    echo "END ENUM4LINUX SCAN OF $ip -- {[$DAY] - $DATE}"
+                                    echo "  "
+                                    enum4linuxon=0
+                            elif [[ $enum4linuxpreference = 2 ]] # FULL ENUMERATION ENUM4LINUX SCAN
+                                then
+                                    echo "  "
+                                    echo "BEGIN FULL ENUMERATION ENUM4LINUX SCAN OF $ip -- {[$DAY] - $DATE}"
+                                    echo "DEFAULT:  enum4linux -a $ip >> output_files/enum4linux_fullscan_$ip\_$DATE.txt"
+                                    echo "  "
+                                    echo "Standby ... your output wile is output_files/enum4linux_fullscan_$ip\_$DATE.txt"
+                                    echo "  "
+                                    enum4linux -a $ip >> output_files/enum4linux_fullscan_$ip\_$DATE.txt
+                                    tail -50 output_files/enum4linux_fullscan_$ip\_$DATE.txt
+                                    echo " "
+                                    echo "END FULL ENUMERATION  ENUM4LINUX SCAN OF $ip -- {[$DAY] - $DATE}"
+                                    echo "  "
+                                    enum4linuxon=0
+                            elif [[ $enum4linuxpreference = 3 ]] # DEFAULT ENUM4LINUX SCAN
+                                then
+                                    echo "  "
+                                    read -p "User Name:  " e4luser
+                                    read -p "Password :  " e4lpass
+                                    echo "BEGIN ENUM4LINUX SCAN OF $ip -- {[$DAY] - $DATE}"
+                                    echo "DEFAULT:  enum4linux -u $e4luser -p $e4lpass -U $ip >> output_files/enum4linux_fullscan_$ip\_$DATE.txt"
+                                    echo "  "
+                                    echo "Standby ... your output wile is output_files/enum4linux_fullscan_$ip\_$DATE.txt"
+                                    echo "  "
+                                    enum4linux -u $e4luser -p $e4lpass -U $ip >> output_files/enum4linux_credentials_$ip\_$DATE.txt
+                                    tail -50 output_files/enum4linux_credentials_$ip\_$DATE.txt
+                                    echo " "
+                                    echo "END ENUM4LINUX SCAN OF $ip -- {[$DAY] - $DATE}"
+                                    echo "  "
+                                    enum4linuxon=0
+                            else
+                                echo "... not an option"
+                                echo "exiting ENUM4LINUX ..."
+                                enum4linuxon=0
+                            fi
+                    done
         elif [[ $tool = 6 ]] # NBTSCAN
             then
                 echo "Coming Soon..."
@@ -207,7 +316,8 @@ while [ $exitoption = 0 ]
         elif [[ $tool = 9 ]] # HYDRA
             then
                 echo "Coming Soon..."
-        elif [[ $tool = 99 ]] # ADMIN MENU
+        elif [[ $tool = 99 ]] # ADMIN MENU - this is for use of listening and serving tools, such as netcat and SimpleHTTPServer
+
             then
                 echo "Coming Soon..."
         else 
