@@ -42,7 +42,7 @@ while [ $exitoption = 0 ]
                             elif [[ $namppreference = 2 ]] # VULNERABILITY NMAP SCAN
                                 then
                                     echo "BEGIN VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    nmap -sV -vv --script vuln -oN output_files/nmap_$ip\_$DATE.txt $ip
+                                    nmap -sV -vv --script vuln -oN output_files/nmap_vuln_$ip\_$DATE.txt $ip
                                     echo "  "
                                     echo "END VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
                                     echo "  "
