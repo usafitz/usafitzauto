@@ -54,7 +54,7 @@ while [ $exitoption = 0 ]
                                     nmapon=0
                             else
                                 echo "... not an option"
-                                echo "exiting script..."
+                                echo "exiting NMAP ..."
                                 nmapon=0
                             fi  
                         read -p "Would you like to run a vulnerability NMAP scan? [y/n]:  " runanswer
@@ -151,7 +151,7 @@ while [ $exitoption = 0 ]
                                     dirbon=0
                             else   
                                 echo "... not an option"
-                                echo "exiting script..."
+                                echo "exiting DIRB ..."
                                 dirbon=0
                             fi
                     echo "  "
