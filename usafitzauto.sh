@@ -14,13 +14,17 @@ while [ $exitoption = 0 ]
         # TOOLS
         echo "  "
         echo "--ENTER YOUR SELECTION--"
+        echo "0 EXIT PROGRAM "
         echo "1 NMAP " 
         echo "2 DIRB "
         echo "3 GOBUSTER "
         echo "       "
         read -p "TOOL SELECTION: " tool
 
-        if [[ $tool = 1 ]] # NMAP
+        if [[ $tool = 0 ]] # NMAP
+            then
+                exitoption=1
+        elif [[ $tool = 1 ]] # NMAP
             then
                 echo "You have selected to use NMAP"
                 echo "  "
@@ -153,18 +157,4 @@ while [ $exitoption = 0 ]
                     echo "  "
                     done
         fi
-        echo "  "
-        read -p "Would you like to exit this program? [y/n]:  " exitprogram
-            if [[ $exitprogram = n ]] # EXIT PROGRAM
-                then
-                    exitoption=0
-            elif [[ $exitprogram = y ]] # RERUN PROGRAM
-                then   
-                    exitoption=1
-                    echo "  "
-            else
-                echo "... not an option"
-                echo "exiting program..."
-            fi
-
     done
