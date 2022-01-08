@@ -25,7 +25,7 @@ while [ $exitoption = 0 ]
         # Great source for info:  https://hausec.com/pentesting-cheatsheet/#_Toc475368977
         # list of kali installed tools: https://www.kali.org/tools/
         echo "  "
-        echo "--ENTER YOUR SELECTION--"
+        echo "-- ENTER YOUR SELECTION --"
         echo "0 EXIT PROGRAM "
         echo "1 NMAP " 
         # scans a network or target for open ports and vulnerabilities
@@ -56,7 +56,8 @@ while [ $exitoption = 0 ]
                 exitoption=1
         elif [[ $tool = 1 ]] # NMAP
             then
-                echo "You have selected to use NMAP"
+                echo "  "
+                echo "-- NMAP --"
                 echo "  "
                 while [ $nmapon = 1 ] # RUN NMAP UNTIL QUIT
                     do 
@@ -98,7 +99,8 @@ while [ $exitoption = 0 ]
                 echo "Exiting NMAP..."
         elif [[ $tool = 2 ]]  # DIRB
             then
-                echo "You have selected to use DIRB"
+                echo "  "
+                echo "-- DIRB --"
                 echo "  "
                 while [ $dirbon = 1 ] # RUN DIRB UNTIL QUIT
                     do
@@ -188,7 +190,8 @@ while [ $exitoption = 0 ]
                     done
         elif [[ $tool = 3 ]] # GOBUSTER
             then
-                echo "You have selected to use GOBUSTER"
+                echo "  "
+                echo "-- GOBUSTER --"
                 echo "  "
                 while [ $gobusteron = 1 ] # RUN DIRB UNTIL QUIT
                     do
@@ -243,7 +246,9 @@ while [ $exitoption = 0 ]
             then
                 while [ $enum4linuxon = 1 ] # RUN ENUM4LINUX UNTIL QUIT
                     do
-                        echo "Do you have a specific wordfile to use?"
+                        echo "  "
+                        echo "-- ENUM4LINUX --"
+                        echo "  "
                         echo "Which type of scan would you like?"
                         echo "0 Back to main menu "
                         echo "1 Default scan (quickest) "
