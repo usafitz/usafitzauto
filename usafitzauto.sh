@@ -50,10 +50,10 @@ if [[ $tool = 1 ]] # NMAP
                 read -p "Would you like to run another NMAP scan? [y/n]:  " runanswer
                     if [ $runanswer = y ]
                         then
-                            nmapon = 1
+                            nmapon=1
                     elif [ $runanswer = n ]
                         then   
-                            $nmapon = 0
+                            nmapon=0
                     else  
                         echo "... not an option"
                         echo "exiting script..." 
