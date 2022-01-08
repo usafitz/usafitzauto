@@ -156,5 +156,8 @@ while [ $exitoption = 0 ]
                             fi
                     echo "  "
                     done
+        elif [[ $tool = 3 ]] # GOBUSTER
+            then
+                echo "Coming Soon..."
         fi
     done
