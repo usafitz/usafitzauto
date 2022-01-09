@@ -9,6 +9,8 @@ exitoption=0
 read -p "Which IP Address?  " ip
 echo "  "
 
+# NOTE:  try to background a process ... might be able to request all enumeration quickly
+
 while [ $exitoption = 0 ]
     do
         # RESET ALL THE TOOLS TO ON (AVAILABLE)
