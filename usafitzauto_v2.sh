@@ -40,7 +40,7 @@ mkdir ./output_files/$DATE
 nmap_sn $ip
 
 # USE THE CREATED LIST TO SCAN INDIVIDUAL COMPUTERS
-for p in $(cat hostsup_$DATE.txt)
+for p in $(cat ./output_files/$DATE/hostsup_$DATE.txt)
 do
 	nmap_command $p
 
