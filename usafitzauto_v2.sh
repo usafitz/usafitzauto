@@ -3,6 +3,8 @@
 DAY=$(date +%u)
 DATE=$(date +%Y%b%d-%T)
 
+echo "Begin Program: $DATE"
+
 nmapon=1
 dirbon=1
 exitoption=0
@@ -17,17 +19,19 @@ function quit {
 # NMAP FUNCTION SECTION
 
 function nmap_setup { # CREATE FOLDER / CALL COMMANDS
-    DATE=$(date +%Y%b%d-%T) 
-    mkdir ./output_files/nmap/$1_$DATE
+    DATENMAP=$(date +%Y%b%d-%T) 
+    echo " within nmap_setup: $DATENMAP"
+    mkdir ./output_files/nmap/$1_$DATENMAP
 }
 
 function nmap_sn { # SCAN NETWORK FOR HOSTS THAT ARE UP
+    echo "wintin nmap_sn: $DATENMAP"
 	echo "  "
 	echo "==================="
 	echo "=== HOSTS FOUND ==="
 	echo "==================="
-	nmap -sn $ip | grep "report for" | cut -d " " -f 5 >> ./output_files/nmap/$DATE/hostsup.txt
-	cat ./output_files/nmap/$DATE/hostsup_$DATE.txt
+	nmap -sn $ip | grep "report for" | cut -d " " -f 5 >> ./output_files/nmap/$DATENMAP/hostsup.txt
+	cat ./output_files/nmap/$DATENMAP/hostsup_$DATENMAP.txt
 	#nmap -sn $1 -oG nmap_$1_fullrange
 	echo "==================="
 }
@@ -36,34 +40,34 @@ function nmap_command { # TCP SYN SCAN (REQUIRES SUDO | QUICK AND EASY)
     echo "  "
     echo "BEGIN: nmap -A -sS $1"
 	
-    for host_ip in $(cat ./output_files/nmap/$DATE/hostsup.txt)
+    for host_ip in $(cat ./output_files/nmap/$DATENMAP/hostsup.txt)
         do
-            sudo nmap -A -sS $host_ip >> ./output_files/nmap/$DATE/$host_ip.txt
+            sudo nmap -A -sS $host_ip >> ./output_files/nmap/$DATENMAP/$host_ip.txt
             echo "  "
-            cat ./output_files/nmap/$DATE/$host_ip.txt
+            cat ./output_files/nmap/$DATENMAP/$host_ip.txt
 
-            if [[ $(cat ./output_files/$DATE/$host_ip.txt | grep "Windows") == *"Windows"* || *"Microsoft"* ]] 
+            if [[ $(cat ./output_files/$DATENMAP/$host_ip.txt | grep "Windows") == *"Windows"* || *"Microsoft"* ]] 
                 then
-                    mv ./output_files/nmap/$DATE/$host_ip.txt ./output_files/nmap/$DATE/$host_ip\_Windows.txt
+                    mv ./output_files/nmap/$DATENMAP/$host_ip.txt ./output_files/nmap/$DATENMAP/$host_ip\_Windows.txt
             fi
             echo "  "
-            echo "HOST: " $host_ip " COMPLETE -- VIEW FILES IN: ./output_files/nmap/$DATE"
+            echo "HOST: " $host_ip " COMPLETE -- VIEW FILES IN: ./output_files/nmap/$DATENMAP"
         done
 }
 
 function nmap_sv { # FUTURE POSSIBILITIES
-    for host_ip in $(cat ./output_files/nmap/$DATE/hostsup.txt)
+    for host_ip in $(cat ./output_files/nmap/$DATENMAP/hostsup.txt)
         do
-            nmap -sV -vv --script vuln $host_ip >> ./output_files/nmap/$DATE/$host_ip.txt
+            nmap -sV -vv --script vuln $host_ip >> ./output_files/nmap/$DATENMAP/$host_ip.txt
             echo "  "
-            cat ./output_files/nmap/$DATE/$host_ip.txt
+            cat ./output_files/nmap/$DATENMAP/$host_ip.txt
 
-            if [[ $(cat ./output_files/$DATE/$host_ip.txt | grep "Windows") == *"Windows"* || *"Microsoft"* ]] 
+            if [[ $(cat ./output_files/$DATENMAP/$host_ip.txt | grep "Windows") == *"Windows"* || *"Microsoft"* ]] 
                 then
-                    mv ./output_files/nmap/$DATE/$host_ip.txt ./output_files/nmap/$DATE/$host_ip\_Windows.txt
+                    mv ./output_files/nmap/$DATENMAP/$host_ip.txt ./output_files/nmap/$DATENMAP/$host_ip\_Windows.txt
             fi
             echo "  "
-            echo "HOST: " $host_ip " COMPLETE -- VIEW FILES IN: ./output_files/nmap/$DATE"
+            echo "HOST: " $host_ip " COMPLETE -- VIEW FILES IN: ./output_files/nmap/$DATENMAP"
         done
 	
     # nmap -sL -oG - -iR 5 $ip
