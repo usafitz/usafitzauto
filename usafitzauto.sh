@@ -45,7 +45,7 @@ function nmap_common { # TCP SYN SCAN (REQUIRES SUDO | QUICK AND EASY)
         do
             echo "  "
             echo "STARTING COMMON NMAP OF:  $host_ip"
-            sudo nmap -A -sS $host_ip >> ./output_files/nmap/$DATENMAP/common/$host_ip.txt
+            sudo nmap -A -T4 -p- -sS $host_ip >> ./output_files/nmap/$DATENMAP/common/$host_ip.txt
             echo "  "
             cat ./output_files/nmap/$DATENMAP/common/$host_ip.txt
 
@@ -63,7 +63,7 @@ function nmap_nse { # NMAP SCRIPTING ENGINE (NSE)
         do
             echo "  "
             echo "STARTING NMAP SCRIPT ENGINE SCAN OF:  $host_ip"
-            nmap -sV -vv --script vuln $host_ip >> ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
+            nmap -sV -vv -p- --script vuln $host_ip >> ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
             echo "  "
             cat ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
 
