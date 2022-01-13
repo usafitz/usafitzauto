@@ -20,7 +20,7 @@ function nmap_sn { # SCAN NETWORK FOR HOSTS THAT ARE UP
 	echo "=== HOSTS FOUND ==="
 	echo "==================="
 	nmap -sn $ip | grep "report for" | cut -d " " -f 5 >> ./output_files/$DATE/hostsup_$DATE.txt
-	cat hostsup_$DATE.txt
+	cat ./output_files/$DATE/hostsup_$DATE.txt
 	#nmap -sn $1 -oG nmap_$1_fullrange
 	echo "==================="
 }
