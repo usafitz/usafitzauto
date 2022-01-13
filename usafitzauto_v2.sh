@@ -25,7 +25,7 @@ function nmap_setup { # CREATE FOLDER / CALL COMMANDS
     mkdir ./output_files/nmap/$DATENMAP
 }
 
-function nmap_sn { # SCAN NETWORK FOR HOSTS THAT ARE UP
+function nmap_find_hosts { # SCAN NETWORK FOR HOSTS THAT ARE UP
     # echo "wintin nmap_sn: $DATENMAP"
 	echo "  "
 	echo "==================="
@@ -37,12 +37,10 @@ function nmap_sn { # SCAN NETWORK FOR HOSTS THAT ARE UP
 	echo "==================="
 }
 
-function nmap_command { # TCP SYN SCAN (REQUIRES SUDO | QUICK AND EASY)
-    echo "  "
-    echo "BEGIN: nmap -A -sS $1"
-	
+function nmap_common { # TCP SYN SCAN (REQUIRES SUDO | QUICK AND EASY)
     for host_ip in $(cat ./output_files/nmap/$DATENMAP/hostsup.txt)
         do
+            echo "STARTING:  $host_ip"
             sudo nmap -A -sS $host_ip >> ./output_files/nmap/$DATENMAP/$host_ip.txt
             echo "  "
             cat ./output_files/nmap/$DATENMAP/$host_ip.txt
@@ -56,7 +54,7 @@ function nmap_command { # TCP SYN SCAN (REQUIRES SUDO | QUICK AND EASY)
         done
 }
 
-function nmap_sv { # FUTURE POSSIBILITIES
+function nmap_nse { # NMAP SCRIPTING ENGINE (NSE)
     for host_ip in $(cat ./output_files/nmap/$DATENMAP/hostsup.txt)
         do
             nmap -sV -vv --script vuln $host_ip >> ./output_files/nmap/$DATENMAP/$host_ip.txt
@@ -139,12 +137,13 @@ while [ $exitoption = 0 ]
                                     nmapon=0
                             elif [[ $namppreference = 1 ]] # COMMON NMAP SCAN
                                 then
-                                    nmap_sn $ip
+                                    nmap_find_hosts
+                                    nmap_common
                                     nmapon=0
                             elif [[ $namppreference = 2 ]] # VULNERABILITY NMAP SCAN
                                 then
-                                    nmap_setup nse
-                                    nmap_sv
+                                    nmap_find_hosts
+                                    nmap_nse
                                     nmapon=0
                             else
                                 echo "... not an option"
