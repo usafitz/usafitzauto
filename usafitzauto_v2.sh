@@ -41,19 +41,19 @@ mkdir ./output_files/$DATE
 nmap_sn $ip
 
 # USE THE CREATED LIST TO SCAN INDIVIDUAL COMPUTERS
-for p in $(cat ./output_files/$DATE/hostsup_$DATE.txt)
+for host_ip in $(cat ./output_files/$DATE/hostsup_$DATE.txt)
 do
-	nmap_command $p
+	nmap_command $host_ip
 
-    echo "HOST: " $ip " COMPLETE -- VIEW FILE AT: ./output_files/$DATE/$1.txt"
+    echo "HOST: " $host_ip " COMPLETE -- VIEW FILE AT: ./output_files/$DATE/$host_ip.txt"
 
-    string='My long string'
     if [[ $(cat ./output_files/$DATE/$1.txt | grep "Windows") == *"Windows"* ]] 
     then
-        mv ./output_files/$DATE/$1.txt ./output_files/$DATE/$1_Windows.txt
+        mv ./output_files/$DATE/$host_ip.txt ./output_files/$DATE/$host_ip\_Windows.txt
     fi
     # cat output_files/$DATE/$1 | grep "Windows" 
 
+    echo "  "
     string='My long string'
     if [[ $string == *"My long"* ]]; then
         echo "It's there!"
