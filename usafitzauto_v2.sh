@@ -11,7 +11,7 @@ function quit {
 }
 
 function changefilename {
-    
+    echo "  "
 }
 
 function nmap_sn { # SCAN NETWORK FOR HOSTS THAT ARE UP
