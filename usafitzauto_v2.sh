@@ -42,7 +42,7 @@ function nmap_command { # TCP SYN SCAN (REQUIRES SUDO | QUICK AND EASY)
             echo "  "
             cat ./output_files/nmap/$DATE/$host_ip.txt
 
-            if [[ $(cat ./output_files/$DATE/$host_ip.txt | grep "Windows") == *"Windows"* ]] 
+            if [[ $(cat ./output_files/$DATE/$host_ip.txt | grep "Windows") == *"Windows"* || *"Microsoft"* ]] 
                 then
                     mv ./output_files/nmap/$DATE/$host_ip.txt ./output_files/nmap/$DATE/$host_ip\_Windows.txt
             fi
@@ -58,7 +58,7 @@ function nmap_sv { # FUTURE POSSIBILITIES
             echo "  "
             cat ./output_files/nmap/$DATE/$host_ip.txt
 
-            if [[ $(cat ./output_files/$DATE/$host_ip.txt | grep "Windows") == *"Windows"* ]] 
+            if [[ $(cat ./output_files/$DATE/$host_ip.txt | grep "Windows") == *"Windows"* || *"Microsoft"* ]] 
                 then
                     mv ./output_files/nmap/$DATE/$host_ip.txt ./output_files/nmap/$DATE/$host_ip\_Windows.txt
             fi
