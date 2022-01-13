@@ -36,7 +36,9 @@ function nmap_find_hosts { # SCAN NETWORK FOR HOSTS THAT ARE UP
 	echo "==================="
 	nmap -sn $ip | grep "report for" | cut -d " " -f 5 >> ./output_files/nmap/$DATENMAP/hostsup.txt
 	cat ./output_files/nmap/$DATENMAP/hostsup.txt
-    echo "NUMBER OF HOSTS FOUND:  " wc -l ./output_files/nmap/$DATENMAP/hostsup.txt
+    echo "NUMBER OF HOSTS FOUND:  " 
+    wc -l ./output_files/nmap/$DATENMAP/hostsup.txt
+    echo "  "
 	#nmap -sn $1 -oG nmap_$1_fullrange
 	echo "==================="
 }
