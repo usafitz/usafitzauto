@@ -23,6 +23,9 @@ function nmap_setup { # CREATE FOLDER / CALL COMMANDS
     # echo " within nmap_setup: $DATENMAP"
     mkdir ./output_files/nmap
     mkdir ./output_files/nmap/$DATENMAP
+    mkdir ./output_files/nmap/$DATENMAP/common
+    mkdir ./output_files/nmap/$DATENMAP/nse
+
 }
 
 function nmap_find_hosts { # SCAN NETWORK FOR HOSTS THAT ARE UP
@@ -40,33 +43,34 @@ function nmap_find_hosts { # SCAN NETWORK FOR HOSTS THAT ARE UP
 function nmap_common { # TCP SYN SCAN (REQUIRES SUDO | QUICK AND EASY)
     for host_ip in $(cat ./output_files/nmap/$DATENMAP/hostsup.txt)
         do
-            echo "STARTING:  $host_ip"
-            sudo nmap -A -sS $host_ip >> ./output_files/nmap/$DATENMAP/$host_ip.txt
             echo "  "
-            cat ./output_files/nmap/$DATENMAP/$host_ip.txt
+            echo "STARTING COMMON NMAP OF:  $host_ip"
+            sudo nmap -A -sS $host_ip >> ./output_files/nmap/$DATENMAP/common/$host_ip.txt
+            echo "  "
+            cat ./output_files/nmap/$DATENMAP/common/$host_ip.txt
 
-            if [[ $(cat ./output_files/$DATENMAP/$host_ip.txt | grep "Windows") == *"Windows"* || *"Microsoft"* ]] 
+            if [[ $(cat ./output_files/$DATENMAP/common/$host_ip.txt | grep "Windows") == *"Windows"* || *"Microsoft"* ]] 
                 then
-                    mv ./output_files/nmap/$DATENMAP/$host_ip.txt ./output_files/nmap/$DATENMAP/$host_ip\_Windows.txt
+                    mv ./output_files/nmap/$DATENMAP/common/$host_ip.txt ./output_files/nmap/$DATENMAP/common/$host_ip\_Windows.txt
             fi
             echo "  "
-            echo "HOST: " $host_ip " COMPLETE -- VIEW FILES IN: ./output_files/nmap/$DATENMAP"
+            echo "HOST: " $host_ip " COMPLETE -- VIEW FILES IN: ./output_files/nmap/$DATENMAP/common/"
         done
 }
 
 function nmap_nse { # NMAP SCRIPTING ENGINE (NSE)
     for host_ip in $(cat ./output_files/nmap/$DATENMAP/hostsup.txt)
         do
-            nmap -sV -vv --script vuln $host_ip >> ./output_files/nmap/$DATENMAP/$host_ip.txt
+            nmap -sV -vv --script vuln $host_ip >> ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
             echo "  "
-            cat ./output_files/nmap/$DATENMAP/$host_ip.txt
+            cat ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
 
-            if [[ $(cat ./output_files/$DATENMAP/$host_ip.txt | grep "Windows") == *"Windows"* || *"Microsoft"* ]] 
+            if [[ $(cat ./output_files/$DATENMAP/nse/$host_ip.txt | grep "Windows") == *"Windows"* || *"Microsoft"* ]] 
                 then
-                    mv ./output_files/nmap/$DATENMAP/$host_ip.txt ./output_files/nmap/$DATENMAP/$host_ip\_Windows.txt
+                    mv ./output_files/nmap/$DATENMAP/nse/$host_ip.txt ./output_files/nmap/$DATENMAP/nse/$host_ip\_Windows.txt
             fi
             echo "  "
-            echo "HOST: " $host_ip " COMPLETE -- VIEW FILES IN: ./output_files/nmap/$DATENMAP"
+            echo "HOST: " $host_ip " COMPLETE -- VIEW FILES IN: ./output_files/nmap/$DATENMAP/nse/"
         done
 	
     # nmap -sL -oG - -iR 5 $ip
