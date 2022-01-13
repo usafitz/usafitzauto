@@ -61,6 +61,8 @@ function nmap_common { # TCP SYN SCAN (REQUIRES SUDO | QUICK AND EASY)
 function nmap_nse { # NMAP SCRIPTING ENGINE (NSE)
     for host_ip in $(cat ./output_files/nmap/$DATENMAP/hostsup.txt)
         do
+            echo "  "
+            echo "STARTING NMAP SCRIPT ENGINE SCAN OF:  $host_ip"
             nmap -sV -vv --script vuln $host_ip >> ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
             echo "  "
             cat ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
