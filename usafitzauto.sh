@@ -36,6 +36,7 @@ function nmap_find_hosts { # SCAN NETWORK FOR HOSTS THAT ARE UP
 	echo "==================="
 	nmap -sn $ip | grep "report for" | cut -d " " -f 5 >> ./output_files/nmap/$DATENMAP/hostsup.txt
 	cat ./output_files/nmap/$DATENMAP/hostsup.txt
+    echo "NUMBER OF HOSTS FOUND:  " wc -l ./output_files/nmap/$DATENMAP/hostsup.txt
 	#nmap -sn $1 -oG nmap_$1_fullrange
 	echo "==================="
 }
@@ -48,7 +49,6 @@ function nmap_common { # TCP SYN SCAN (REQUIRES SUDO | QUICK AND EASY)
             sudo nmap -A -T4 -p- -sS $host_ip >> ./output_files/nmap/$DATENMAP/common/$host_ip.txt
             echo "  "
             cat ./output_files/nmap/$DATENMAP/common/$host_ip.txt
-
             if [[ $(cat ./output_files/$DATENMAP/common/$host_ip.txt | grep "Windows") == *"Windows"* || *"Microsoft"* ]] 
                 then
                     mv ./output_files/nmap/$DATENMAP/common/$host_ip.txt ./output_files/nmap/$DATENMAP/common/$host_ip\_Windows.txt
@@ -66,7 +66,6 @@ function nmap_nse { # NMAP SCRIPTING ENGINE (NSE)
             nmap -sV -vv -p- --script vuln $host_ip >> ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
             echo "  "
             cat ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
-
             if [[ $(cat ./output_files/$DATENMAP/nse/$host_ip.txt | grep "Windows") == *"Windows"* || *"Microsoft"* ]] 
                 then
                     mv ./output_files/nmap/$DATENMAP/nse/$host_ip.txt ./output_files/nmap/$DATENMAP/nse/$host_ip\_Windows.txt
