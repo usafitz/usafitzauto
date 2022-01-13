@@ -2,14 +2,79 @@
 
 DAY=$(date +%u)
 DATE=$(date +%Y%b%d-%T)
+
+echo "Begin Program: $DATE"
+
 nmapon=1
 dirbon=1
 exitoption=0
 
-read -p "Which IP Address?  " ip
+read -p "Which IP or NETWORK [10.11.1.0/24]:  " ip
 echo "  "
 
-# NOTE:  try to background a process ... might be able to request all enumeration quickly
+function quit {
+	exit
+}
+
+# NMAP FUNCTION SECTION
+
+function nmap_setup { # CREATE FOLDER / CALL COMMANDS
+    DATENMAP=$(date +%Y%b%d-%T) 
+    # echo " within nmap_setup: $DATENMAP"
+    mkdir ./output_files/nmap
+    mkdir ./output_files/nmap/$DATENMAP
+    mkdir ./output_files/nmap/$DATENMAP/common
+    mkdir ./output_files/nmap/$DATENMAP/nse
+
+}
+
+function nmap_find_hosts { # SCAN NETWORK FOR HOSTS THAT ARE UP
+    # echo "wintin nmap_sn: $DATENMAP"
+	echo "  "
+	echo "==================="
+	echo "=== HOSTS FOUND ==="
+	echo "==================="
+	nmap -sn $ip | grep "report for" | cut -d " " -f 5 >> ./output_files/nmap/$DATENMAP/hostsup.txt
+	cat ./output_files/nmap/$DATENMAP/hostsup.txt
+	#nmap -sn $1 -oG nmap_$1_fullrange
+	echo "==================="
+}
+
+function nmap_common { # TCP SYN SCAN (REQUIRES SUDO | QUICK AND EASY)
+    for host_ip in $(cat ./output_files/nmap/$DATENMAP/hostsup.txt)
+        do
+            echo "  "
+            echo "STARTING COMMON NMAP OF:  $host_ip"
+            sudo nmap -A -sS $host_ip >> ./output_files/nmap/$DATENMAP/common/$host_ip.txt
+            echo "  "
+            cat ./output_files/nmap/$DATENMAP/common/$host_ip.txt
+
+            if [[ $(cat ./output_files/$DATENMAP/common/$host_ip.txt | grep "Windows") == *"Windows"* || *"Microsoft"* ]] 
+                then
+                    mv ./output_files/nmap/$DATENMAP/common/$host_ip.txt ./output_files/nmap/$DATENMAP/common/$host_ip\_Windows.txt
+            fi
+            echo "  "
+            echo "HOST: " $host_ip " COMPLETE -- VIEW FILES IN: ./output_files/nmap/$DATENMAP/common/"
+        done
+}
+
+function nmap_nse { # NMAP SCRIPTING ENGINE (NSE)
+    for host_ip in $(cat ./output_files/nmap/$DATENMAP/hostsup.txt)
+        do
+            nmap -sV -vv --script vuln $host_ip >> ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
+            echo "  "
+            cat ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
+
+            if [[ $(cat ./output_files/$DATENMAP/nse/$host_ip.txt | grep "Windows") == *"Windows"* || *"Microsoft"* ]] 
+                then
+                    mv ./output_files/nmap/$DATENMAP/nse/$host_ip.txt ./output_files/nmap/$DATENMAP/nse/$host_ip\_Windows.txt
+            fi
+            echo "  "
+            echo "HOST: " $host_ip " COMPLETE -- VIEW FILES IN: ./output_files/nmap/$DATENMAP/nse/"
+        done
+	
+    # nmap -sL -oG - -iR 5 $ip
+}
 
 while [ $exitoption = 0 ]
     do
@@ -53,11 +118,12 @@ while [ $exitoption = 0 ]
         echo "       "
         read -p "TOOL SELECTION: " tool
 
-        if [[ $tool = 0 ]] # NMAP
+        if [[ $tool = 0 ]] # EXIT PROGRAM
             then
-                exitoption=1
+                quit
         elif [[ $tool = 1 ]] # NMAP
             then
+                nmap_setup
                 echo "  "
                 echo "-- NMAP --"
                 echo "  "
@@ -67,6 +133,7 @@ while [ $exitoption = 0 ]
                         echo "0 Back to main menu "
                         echo "1 Common & Popular "
                         echo "2 High Enumeration "
+                        echo "3 Run All Scans (overnight) "
                         echo "  "
                         read -p "YOUR SELECTION:  " namppreference
                         echo "  "
@@ -75,21 +142,20 @@ while [ $exitoption = 0 ]
                                     nmapon=0
                             elif [[ $namppreference = 1 ]] # COMMON NMAP SCAN
                                 then
-                                    echo "BEGIN COMMON NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "  "
-                                    nmap -A -T4 -p- -oN output_files/nmap_$ip\_$DATE.txt $ip
-                                    echo "  "
-                                    echo "END COMMON NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "  "
+                                    nmap_find_hosts
+                                    nmap_common
                                     nmapon=0
                             elif [[ $namppreference = 2 ]] # VULNERABILITY NMAP SCAN
                                 then
-                                    echo "BEGIN VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    nmap -sV -vv --script vuln -oN output_files/nmap_vuln_$ip\_$DATE.txt $ip
-                                    echo "  "
-                                    echo "END VULN NMAP SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "  "
+                                    nmap_find_hosts
+                                    nmap_nse
                                     nmapon=0
+                            elif [[ $namppreference = 3 ]] # VULNERABILITY NMAP SCAN
+                                then
+                                    nmap_find_hosts
+                                    nmap_common
+                                    nmap_nse
+                                    nmapon=0        
                             else
                                 echo "... not an option"
                                 echo "exiting NMAP ..."
@@ -99,218 +165,18 @@ while [ $exitoption = 0 ]
                     done
                 echo "  "
                 echo "Exiting NMAP..."
-        elif [[ $tool = 2 ]]  # DIRB
+        elif [[ $tool = 2 ]] # DIRB
             then
-                echo "  "
-                echo "-- DIRB --"
-                echo "  "
-                while [ $dirbon = 1 ] # RUN DIRB UNTIL QUIT
-                    do
-                        echo "Do you have a specific wordfile to use?"
-                        echo "Which type of scan would you like?"
-                        echo "0 Back to main menu "
-                        echo "1 Specify your own wordlist "
-                        echo "2 Default scan (quickest)"
-                        echo "3 Massive wordlist scan (long duration) "
-                        echo "  "
-                        read -p "YOUR SELECTION:  " dirbpreference
-                            if [[ $dirbpreference = 0 ]] # EXIT DIRB
-                                then
-                                    dirbon=0
-                            elif [[ $dirbpreference = 1 ]] # SPECIFIC WORDFILE ENTRY AND RUN
-                                then
-                                    read -p "Please specfiy absolute location and file:  "  wordfile
-                                    echo "  " 
-                                    echo "BEGIN DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "DEFAULT:  dirb http://$ip $wordfile -w -o output_files/dirb_$ip\_$DATE.txt"
-                                    echo "  "
-                                    echo "Other options include:  "
-                                    echo "-W EXTENSIONS_LIST: (.php) | (.php) [NUM = 1]"
-                                    echo "-H ADDED HEADERS (LIKE .php)"
-                                    echo "-r OPTION: Not Recursive"
-                                    echo "-z SPEED_DELAY: 100 milliseconds"
-                                    echo "-v OPTION: Show Not Existent Pages"
-                                    echo "-N OPTION: Ignoring NOT_FOUND code -> 302"
-                                    echo "-w OPTION: Not Stopping on warning messages"
-                                    echo "-u admin:admin AUTHORIZATION: admin:admin (authentication)"
-                                    echo "-p PROXY: localhost:8080"
-                                    echo "  "
-                                    echo "  "
-                                    dirb http://$ip $wordfile -w -o output_files/dirb_$ip\_$DATE.txt
-                                    echo " "
-                                    echo "END DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo " "
-                                    dirbon=0
-                            elif [[ $dirbpreference = 2 ]] # DEFAULT DIRB
-                                then
-                                    echo "  " 
-                                    echo "BEGIN DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "DEFAULT:  http://$ip files/dirb/common.txt -w -o output_files/dirb_$ip\_$DATE.txt"
-                                    echo "  "
-                                    echo "Other options include:  "
-                                    echo "-W EXTENSIONS_LIST: (.php) | (.php) [NUM = 1]"
-                                    echo "-H ADDED HEADERS (LIKE .php)"
-                                    echo "-r OPTION: Not Recursive"
-                                    echo "-z SPEED_DELAY: 100 milliseconds"
-                                    echo "-v OPTION: Show Not Existent Pages"
-                                    echo "-N OPTION: Ignoring NOT_FOUND code -> 302"
-                                    echo "-w OPTION: Not Stopping on warning messages"
-                                    echo "-u admin:admin AUTHORIZATION: admin:admin (authentication)"
-                                    echo "-p PROXY: localhost:8080"
-                                    echo "  "
-                                    echo "  " 
-                                    dirb http://$ip files/dirb/common.txt -w -o output_files/dirb_$ip\_$DATE.txt
-                                    echo " "
-                                    echo "END DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "  "
-                                    dirbon=0
-                            elif [[ $dirbpreference = 3 ]] # MASSIVE WORDLIST SCAN
-                                then
-                                    echo "  "
-                                    echo "BEGIN DIRB SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "DEFAULT:  dirb http://$ip files/dirb/*.txt -w -o output_files/dirb_massive_$ip\_$DATE.txt"
-                                    echo "  "
-                                    echo "Other options include:  "
-                                    echo "-W EXTENSIONS_LIST: (.php) | (.php) [NUM = 1]"
-                                    echo "-H ADDED HEADERS (LIKE .php)"
-                                    echo "-r OPTION: Not Recursive"
-                                    echo "-z SPEED_DELAY: 100 milliseconds"
-                                    echo "-v OPTION: Show Not Existent Pages"
-                                    echo "-N OPTION: Ignoring NOT_FOUND code -> 302"
-                                    echo "-w OPTION: Not Stopping on warning messages"
-                                    echo "-u admin:admin AUTHORIZATION: admin:admin (authentication)"
-                                    echo "-p PROXY: localhost:8080"
-                                    echo "  "
-                                    echo "  " 
-                                    dirb http://$ip files/dirb/*.txt -w -o output_files/dirb_massive_$ip\_$DATE.txt
-                                    dirbon=0
-                            else
-                                echo "... not an option"
-                                echo "exiting DIRB ..."
-                                dirbon=0
-                            fi
-                    done
+                echo "Coming Soon..."
         elif [[ $tool = 3 ]] # GOBUSTER
             then
-                echo "  "
-                echo "-- GOBUSTER --"
-                echo "  "
-                while [ $gobusteron = 1 ] # RUN DIRB UNTIL QUIT
-                    do
-                        echo "Which type of scan would you like?"
-                        echo "0 Back to main menu "
-                        echo "1 Directory scan "
-                        echo "2 VHOSTS scan"
-                        echo "  "
-                        read -p "YOUR SELECTION:  " gobusterpreference
-                            if [[ $gobusterpreference = 0 ]] # EXIT GOBUSTER
-                                then
-                                    gobusteron=0
-                            elif [[ $gobusterpreference = 1 ]] # DEFAULT GOBUSTER SCAN
-                                then
-                                    echo "  "
-                                    echo "BEGIN GOBUSTER SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "DEFAULT:  gobuster dir -u http://$ip -w files/dirb/directory-list-2.3-medium.txt"
-                                    echo "  "
-                                    gobuster dir -u http://$ip -w files/dirb/directory-list-2.3-medium.txt -o gobuster_$ip\_$DATE.txt.txt
-                                    echo " "
-                                    echo "END GOBUSTER SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "  "
-                                    gobusteron=0
-                            elif [[ $gobusterpreference = 2 ]] # VHOSTS GOBUSTER SCAN
-                                then
-                                    echo "  "
-                                    echo "BEGIN GOBUSTER VHOSTS SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "DEFAULT:  gobuster vhost -v -w files/dirb/subdomains-top1million-5000.txt -u http://$ip -o gobuster_vhosts_$ip\_$DATE.txt.txt"
-                                    echo "  "
-                                    gobuster vhost -v -w files/dirb/subdomains-top1million-5000.txt -u http://$ip -o gobuster_vhosts_$ip\_$DATE.txt.txt
-                                    echo " "
-                                    echo "END GOBUSTER VHOSTS SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "  "
-                                    gobusteron=0
-                            else
-                                echo "... not an option"
-                                echo "exiting GOBUSTER ..."
-                                gobusteron=0
-                            fi
-                    done
+                echo "Coming Soon..."
         elif [[ $tool = 4 ]] # NIKTO
             then
-                echo "  "
-                echo "BEGIN NIKTO SCAN OF $ip -- {[$DAY] - $DATE}"
-                echo "DEFAULT:  nikto -h $ip -o output_files/nikto_$ip\_$DATE.txt"
-                echo "  "
-                nikto -h $ip -o output_files/nikto_$ip\_$DATE.txt
-                echo " "
-                echo "END NIKTO SCAN OF $ip -- {[$DAY] - $DATE}"
-                echo "  "
+                echo "Coming Soon..."
         elif [[ $tool = 5 ]] # ENUM4LINUX
             then
-                while [ $enum4linuxon = 1 ] # RUN ENUM4LINUX UNTIL QUIT
-                    do
-                        echo "  "
-                        echo "-- ENUM4LINUX --"
-                        echo "  "
-                        echo "Which type of scan would you like?"
-                        echo "0 Back to main menu "
-                        echo "1 Default scan (quickest) "
-                        echo "2 Full enumeration (noisy and long duration)"
-                        echo "3 Use known credentials "
-                        echo "  "
-                        read -p "YOUR SELECTION:  " enum4linuxpreference
-                            if [[ $enum4linuxpreference = 0 ]] # EXIT ENUM4LINUX
-                                then
-                                    enum4linuxon=0
-                            elif [[ $enum4linuxpreference = 1 ]] # DEFAULT ENUM4LINUX SCAN
-                                then
-                                    echo "  "
-                                    echo "BEGIN ENUM4LINUX SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "DEFAULT:  enum4linux -v $ip >> output_files/enum4linux_$ip\_$DATE.txt"
-                                    echo "  "
-                                    echo "Standby ... your output wile is output_files/enum4linux_$ip\_$DATE.txt"
-                                    echo "  "
-                                    enum4linux -v $ip >> output_files/enum4linux_$ip\_$DATE.txt
-                                    tail -50 output_files/enum4linux_$ip\_$DATE.txt
-                                    echo " "
-                                    echo "END ENUM4LINUX SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "  "
-                                    enum4linuxon=0
-                            elif [[ $enum4linuxpreference = 2 ]] # FULL ENUMERATION ENUM4LINUX SCAN
-                                then
-                                    echo "  "
-                                    echo "BEGIN FULL ENUMERATION ENUM4LINUX SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "DEFAULT:  enum4linux -a $ip >> output_files/enum4linux_fullscan_$ip\_$DATE.txt"
-                                    echo "  "
-                                    echo "Standby ... your output wile is output_files/enum4linux_fullscan_$ip\_$DATE.txt"
-                                    echo "  "
-                                    enum4linux -a $ip >> output_files/enum4linux_fullscan_$ip\_$DATE.txt
-                                    tail -50 output_files/enum4linux_fullscan_$ip\_$DATE.txt
-                                    echo " "
-                                    echo "END FULL ENUMERATION  ENUM4LINUX SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "  "
-                                    enum4linuxon=0
-                            elif [[ $enum4linuxpreference = 3 ]] # DEFAULT ENUM4LINUX SCAN
-                                then
-                                    echo "  "
-                                    read -p "User Name:  " e4luser
-                                    read -p "Password :  " e4lpass
-                                    echo "BEGIN ENUM4LINUX SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "DEFAULT:  enum4linux -u $e4luser -p $e4lpass -U $ip >> output_files/enum4linux_fullscan_$ip\_$DATE.txt"
-                                    echo "  "
-                                    echo "Standby ... your output wile is output_files/enum4linux_fullscan_$ip\_$DATE.txt"
-                                    echo "  "
-                                    enum4linux -u $e4luser -p $e4lpass -U $ip >> output_files/enum4linux_credentials_$ip\_$DATE.txt
-                                    tail -50 output_files/enum4linux_credentials_$ip\_$DATE.txt
-                                    echo " "
-                                    echo "END ENUM4LINUX SCAN OF $ip -- {[$DAY] - $DATE}"
-                                    echo "  "
-                                    enum4linuxon=0
-                            else
-                                echo "... not an option"
-                                echo "exiting ENUM4LINUX ..."
-                                enum4linuxon=0
-                            fi
-                    done
+                echo "Coming Soon..."
         elif [[ $tool = 6 ]] # NBTSCAN
             then
                 echo "Coming Soon..."
@@ -332,3 +198,45 @@ while [ $exitoption = 0 ]
            echo "  "
         fi
     done
+
+# # CREATE FRESH DIRECTORY FOR ALL OUTPUT FILES
+# mkdir ./output_files/nmap/$DATE 
+
+# # DO AN INITIAL SCAN TO SEE WHICH IP IS AVAILABLE
+# nmap_sn $ip
+
+# # USE THE CREATED LIST TO SCAN INDIVIDUAL COMPUTERS
+# for host_ip in $(cat ./output_files/nmap/$DATE/hostsup_$DATE.txt)
+# do
+# 	nmap_command $host_ip
+
+#     echo "HOST: " $host_ip " COMPLETE -- VIEW FILES IN: ./output_files/nmap/$DATE"
+
+#     if [[ $(cat ./output_files/$DATE/$host_ip.txt | grep "Windows") == *"Windows"* ]] 
+#     then
+#         mv ./output_files/nmap/$DATE/$host_ip.txt ./output_files/nmap/$DATE/$host_ip\_Windows.txt
+#     fi
+# done
+
+# DIRB FUNCTION SECTION
+
+
+
+
+#read -p "Which IP or Network?:  " ip
+#echo "  "
+#
+#echo "-- NMAP --"
+#echo "1. Scan Network for hosts"
+#echo "2. Stealth Scan"
+#echo "  "
+#echo "-------------------------"
+#read -p "SELECTION:  " selection
+#
+#nmap -sn 10.11.1.0/24 | grep "report for" | cut -d " " -f 5
+#
+#for ip in $(seq 1 254)
+#	do nmap_sn 10.11.1.$ip
+#done
+
+quit
