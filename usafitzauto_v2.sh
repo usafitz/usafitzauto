@@ -50,7 +50,7 @@ do
 
     echo "HOST: " $host_ip " COMPLETE -- VIEW FILE AT: ./output_files/$DATE/$host_ip.txt"
 
-    if [[ $(cat ./output_files/$DATE/$1.txt | grep "Windows") == *"Windows"* ]] 
+    if [[ $(cat ./output_files/$DATE/$host_ip.txt | grep "Windows") == *"Windows"* ]] 
     then
         mv ./output_files/$DATE/$host_ip.txt ./output_files/$DATE/$host_ip\_Windows.txt
     fi
