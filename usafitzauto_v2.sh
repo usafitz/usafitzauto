@@ -21,6 +21,7 @@ function quit {
 function nmap_setup { # CREATE FOLDER / CALL COMMANDS
     DATENMAP=$(date +%Y%b%d-%T) 
     echo " within nmap_setup: $DATENMAP"
+    mkdir ./output_files/nmap
     mkdir ./output_files/nmap/$1_$DATENMAP
 }
 
