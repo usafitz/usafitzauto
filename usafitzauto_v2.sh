@@ -31,7 +31,10 @@ function nmap_sl { # FUTURE POSSIBILITIES
 
 function nmap_command { # TCP SYN SCAN (REQUIRES SUDO | QUICK AND EASY)
     # REMOVED -oG
+    echo "  "
+    echo "BEGIN: nmap -A -sS $1"
 	sudo nmap -A -sS $1 >> ./output_files/$DATE/$1.txt
+    echo "  "
 }
 
 # CREATE FRESH DIRECTORY FOR ALL OUTPUT FILES
