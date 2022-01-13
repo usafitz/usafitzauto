@@ -30,7 +30,8 @@ function nmap_sl { # FUTURE POSSIBILITIES
 }
 
 function nmap_command { # TCP SYN SCAN (REQUIRES SUDO | QUICK AND EASY)
-	sudo nmap -A -sS $1 -oG ./output_files/$DATE/$1 >> ./output_files/$DATE/$1_test.txt
+    # REMOVED -oG
+	sudo nmap -A -sS $1 >> ./output_files/$DATE/$1.txt
 }
 
 # CREATE FRESH DIRECTORY FOR ALL OUTPUT FILES
@@ -44,13 +45,20 @@ for p in $(cat ./output_files/$DATE/hostsup_$DATE.txt)
 do
 	nmap_command $p
 
-    echo "  "
+    echo "HOST: " $ip " COMPLETE -- VIEW FILE AT: ./output_files/$DATE/$1.txt"
+
+    string='My long string'
+    if [[ $(cat ./output_files/$DATE/$1.txt | grep "Windows") == *"Windows"* ]] 
+    then
+        mv ./output_files/$DATE/$1.txt ./output_files/$DATE/$1_Windows.txt
+    fi
+    # cat output_files/$DATE/$1 | grep "Windows" 
 
     string='My long string'
     if [[ $string == *"My long"* ]]; then
         echo "It's there!"
     fi
-    # cat output_files/$DATE/$1 | grep "Windows" 
+    # cat output_files/$DATE/$1 | grep "Windows"
 done
 
 
