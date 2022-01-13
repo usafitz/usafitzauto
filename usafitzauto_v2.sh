@@ -20,19 +20,19 @@ function quit {
 
 function nmap_setup { # CREATE FOLDER / CALL COMMANDS
     DATENMAP=$(date +%Y%b%d-%T) 
-    echo " within nmap_setup: $DATENMAP"
+    # echo " within nmap_setup: $DATENMAP"
     mkdir ./output_files/nmap
-    mkdir ./output_files/nmap/$1_$DATENMAP
+    mkdir ./output_files/nmap/$DATENMAP
 }
 
 function nmap_sn { # SCAN NETWORK FOR HOSTS THAT ARE UP
-    echo "wintin nmap_sn: $DATENMAP"
+    # echo "wintin nmap_sn: $DATENMAP"
 	echo "  "
 	echo "==================="
 	echo "=== HOSTS FOUND ==="
 	echo "==================="
 	nmap -sn $ip | grep "report for" | cut -d " " -f 5 >> ./output_files/nmap/$DATENMAP/hostsup.txt
-	cat ./output_files/nmap/$DATENMAP/hostsup_$DATENMAP.txt
+	cat ./output_files/nmap/$DATENMAP/hostsup.txt
 	#nmap -sn $1 -oG nmap_$1_fullrange
 	echo "==================="
 }
@@ -121,6 +121,7 @@ while [ $exitoption = 0 ]
                 quit
         elif [[ $tool = 1 ]] # NMAP
             then
+                nmap_setup
                 echo "  "
                 echo "-- NMAP --"
                 echo "  "
@@ -138,7 +139,6 @@ while [ $exitoption = 0 ]
                                     nmapon=0
                             elif [[ $namppreference = 1 ]] # COMMON NMAP SCAN
                                 then
-                                    nmap_setup common
                                     nmap_sn $ip
                                     nmapon=0
                             elif [[ $namppreference = 2 ]] # VULNERABILITY NMAP SCAN
