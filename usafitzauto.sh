@@ -16,7 +16,7 @@ function quit {
 	exit
 }
 
-# NMAP FUNCTION SECTION
+# NMAP FUNCTION SECTION ..
 
 function nmap_setup { # CREATE FOLDER / CALL COMMANDS
     DATENMAP=$(date +%Y%b%d-%T) 
