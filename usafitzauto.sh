@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# NOTES
+# GETTING ERROR: cat: './output_files/2022Jan15-16:12:35/common/10.11.1.133.txt': No such file or directory
+
+
 DAY=$(date +%u)
 DATE=$(date +%Y%b%d-%T)
 
