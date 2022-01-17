@@ -89,7 +89,7 @@ function nmap_udp { # NMAP CHECK FOR UDP
     for host_ip in $(cat ./output_files/nmap/$DATENMAP/hostsup.txt)
         do
             echo "  "
-            echo "STARTING NMAP SCRIPT ENGINE SCAN OF:  $host_ip"
+            echo "STARTING NMAP UDP SCAN OF:  $host_ip"
             nmap -sU -O $host_ip -oN ./output_files/nmap/$DATENMAP/udp_$host_ip.txt  # >> ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
             echo "COMPLETE NMAP OF:  $host_ip "
             # cat ./output_files/nmap/$DATENMAP/udp_$host_ip.txt
@@ -197,8 +197,8 @@ while [ $exitoption = 0 ]
                         echo "Which type of scan would you like?"
                         echo "0 Back to main menu "
                         echo "1 Common & Popular "
-                        echo "2 High Enumeration "
-                        echo "3 UDP scan"
+                        echo "2 UDP SCAN "
+                        echo "3 NSE scan"
                         echo "4 Run All Scans (overnight) "
                         echo "5 SINGLE HOST - run all - background"
                         echo "6 Find Windows Targets - rename file "
