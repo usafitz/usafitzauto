@@ -2,7 +2,7 @@
 
 # NOTES
 # GETTING ERROR: cat: './output_files/2022Jan15-16:12:35/common/10.11.1.133.txt': No such file or directory
-
+# REMOVE:  /common, and /nse
 
 DAY=$(date +%u)
 DATE=$(date +%Y%b%d-%T)
@@ -27,8 +27,8 @@ function nmap_setup { # CREATE FOLDER / CALL COMMANDS
     # echo " within nmap_setup: $DATENMAP"
     mkdir ./output_files/nmap
     mkdir ./output_files/nmap/$DATENMAP
-    mkdir ./output_files/nmap/$DATENMAP/common
-    mkdir ./output_files/nmap/$DATENMAP/nse
+    # mkdir ./output_files/nmap/$DATENMAP/common
+    # mkdir ./output_files/nmap/$DATENMAP/nse
 
 }
 
@@ -52,16 +52,17 @@ function nmap_common { # TCP SYN SCAN (REQUIRES SUDO | QUICK AND EASY)
         do
             echo "  "
             echo "STARTING COMMON NMAP OF:  $host_ip"
-            sudo nmap -A -T4 -p- -sS $host_ip >> ./output_files/nmap/$DATENMAP/common/$host_ip.txt
+            sudo nmap -A -T4 -p- -sS $host_ip -oG ./output_files/nmap/$DATENMAP/common_$host_ip.txt & # >> ./output_files/nmap/$DATENMAP/common/$host_ip.txt
+            echo "CONTINUING SCAN...  "
+            # cat ./output_files/nmap/$DATENMAP/common/$host_ip.txt
+            # if [[ $(cat ./output_files/nmap/$DATENMAP/common_$host_ip.txt | grep "Windows") == *"Windows"* ]] 
+            #     then
+            #         mv ./output_files/nmap/$DATENMAP/common_$host_ip.txt ./output_files/nmap/$DATENMAP/common_$host_ip\_Windows.txt
+            # fi
             echo "  "
-            cat ./output_files/nmap/$DATENMAP/common/$host_ip.txt
-            if [[ $(cat ./output_files/$DATENMAP/common/$host_ip.txt | grep "Windows") == *"Windows"* || *"Microsoft"* ]] 
-                then
-                    mv ./output_files/nmap/$DATENMAP/common/$host_ip.txt ./output_files/nmap/$DATENMAP/common/$host_ip\_Windows.txt
-            fi
-            echo "  "
-            echo "HOST: " $host_ip " COMPLETE -- VIEW FILES IN: ./output_files/nmap/$DATENMAP/common/"
+            # echo "HOST: " $host_ip " COMPLETE -- VIEW FILES IN: ./output_files/nmap/$DATENMAP/"
         done
+        echo "NMAP QUICK AND EASY SCAN COMPLETE, VIEW FILES IN: ./output_files/nmap/$DATENMAP/"
 }
 
 function nmap_nse { # NMAP SCRIPTING ENGINE (NSE)
@@ -69,19 +70,63 @@ function nmap_nse { # NMAP SCRIPTING ENGINE (NSE)
         do
             echo "  "
             echo "STARTING NMAP SCRIPT ENGINE SCAN OF:  $host_ip"
-            nmap -sV -vv -p- --script vuln $host_ip >> ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
+            nmap -sV -vv -p- --script vuln $host_ip -oG ./output_files/nmap/$DATENMAP/nse_$host_ip.txt & # >> ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
+            echo "CONTINUING SCAN...  "
+            # cat ./output_files/nmap/$DATENMAP/nse_$host_ip.txt
+            # if [[ $(cat ./output_files/nmap/$DATENMAP/nse_$host_ip.txt | grep "Windows") == *"Windows"* ]] 
+            #     then
+            #         mv ./output_files/nmap/$DATENMAP/nse_$host_ip.txt ./output_files/nmap/$DATENMAP/nse_$host_ip\_Windows.txt
+            # fi
             echo "  "
-            cat ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
-            if [[ $(cat ./output_files/$DATENMAP/nse/$host_ip.txt | grep "Windows") == *"Windows"* || *"Microsoft"* ]] 
-                then
-                    mv ./output_files/nmap/$DATENMAP/nse/$host_ip.txt ./output_files/nmap/$DATENMAP/nse/$host_ip\_Windows.txt
-            fi
-            echo "  "
-            echo "HOST: " $host_ip " COMPLETE -- VIEW FILES IN: ./output_files/nmap/$DATENMAP/nse/"
+            # echo "HOST: " $host_ip " COMPLETE -- VIEW FILES IN: ./output_files/nmap/$DATENMAP/"
         done
+        echo "NMAP NSE SCAN COMPLETE, VIEW FILES IN: ./output_files/nmap/$DATENMAP/"
 	
     # nmap -sL -oG - -iR 5 $ip
 }
+
+function nmap_udp { # NMAP CHECK FOR UDP
+    for host_ip in $(cat ./output_files/nmap/$DATENMAP/hostsup.txt)
+        do
+            echo "  "
+            echo "STARTING NMAP SCRIPT ENGINE SCAN OF:  $host_ip"
+            nmap -sU -O -oA nmap/udp $host_ip -oG ./output_files/nmap/$DATENMAP/udp_$host_ip.txt & # >> ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
+            echo "CONTINUING SCAN...   "
+            # cat ./output_files/nmap/$DATENMAP/udp_$host_ip.txt
+            # if [[ $(cat ./output_files/nmap/$DATENMAP/udp_$host_ip.txt | grep "Windows") == *"Windows"* ]] 
+            #     then
+            #         mv ./output_files/nmap/$DATENMAP/udp_$host_ip.txt ./output_files/nmap/$DATENMAP/udp_$host_ip\_Windows.txt
+            # fi
+            echo "  "
+            # echo "HOST: " $host_ip " COMPLETE -- VIEW FILES IN: ./output_files/nmap/$DATENMAP/nse/"
+        done
+        echo "NMAP UDP SCAN COMPLETE, VIEW FILES IN: ./output_files/nmap/$DATENMAP/"
+}
+
+function nmap_changename { # CHANGE NAME TO INCLUDE WINDOWS IF KNOWN
+    for host_ip in $(cat ./output_files/nmap/$DATENMAP/hostsup.txt)
+        do
+            # COMMON SCAN
+            if [[ $(cat ./output_files/nmap/$DATENMAP/common_$host_ip.txt | grep "Windows") == *"Windows"* ]] 
+                then
+                    mv ./output_files/nmap/$DATENMAP/common_$host_ip.txt ./output_files/nmap/$DATENMAP/common_$host_ip\_Windows.txt
+            fi
+            # NSE SCAN
+            if [[ $(cat ./output_files/nmap/$DATENMAP/nse_$host_ip.txt | grep "Windows") == *"Windows"* ]] 
+                then
+                    mv ./output_files/nmap/$DATENMAP/nse_$host_ip.txt ./output_files/nmap/$DATENMAP/nse_$host_ip\_Windows.txt
+            fi
+            # UDP SCAN
+            if [[ $(cat ./output_files/nmap/$DATENMAP/udp_$host_ip.txt | grep "Windows") == *"Windows"* ]] 
+                then
+                    mv ./output_files/nmap/$DATENMAP/udp_$host_ip.txt ./output_files/nmap/$DATENMAP/udp_$host_ip\_Windows.txt
+            fi
+        done
+        echo "RENAMING COMPLETE... RETURNING TO MAIN MENU."
+        echo "  "
+}
+
+nmap -sU -O -oA nmap/udp
 
 while [ $exitoption = 0 ]
     do
@@ -140,7 +185,9 @@ while [ $exitoption = 0 ]
                         echo "0 Back to main menu "
                         echo "1 Common & Popular "
                         echo "2 High Enumeration "
-                        echo "3 Run All Scans (overnight) "
+                        echo "3 UDP scan"
+                        echo "4 Run All Scans (overnight) "
+                        echo "5 Find Windows Targets - rename file "
                         echo "  "
                         read -p "YOUR SELECTION:  " namppreference
                         echo "  "
@@ -151,18 +198,28 @@ while [ $exitoption = 0 ]
                                 then
                                     nmap_find_hosts
                                     nmap_common
-                                    nmapon=0
-                            elif [[ $namppreference = 2 ]] # VULNERABILITY NMAP SCAN
+                                    nmapon=1
+                            elif [[ $namppreference = 2 ]] # UDP NMAP SCAN
                                 then
                                     nmap_find_hosts
-                                    nmap_nse
-                                    nmapon=0
+                                    nmap_udp
+                                    nmapon=1
                             elif [[ $namppreference = 3 ]] # VULNERABILITY NMAP SCAN
                                 then
                                     nmap_find_hosts
-                                    nmap_common
                                     nmap_nse
-                                    nmapon=0        
+                                    nmapon=1
+                            elif [[ $namppreference = 4 ]] # ALL SCANS
+                                then
+                                    nmap_find_hosts
+                                    nmap_common
+                                    nmap_udp
+                                    nmap_nse
+                                    nmapon=1  
+                            elif [[ $namppreference = 5 ]] # CHANGE NAMES IF KNOWN WINDOWS
+                                then      
+                                    nmap_changename
+                                    nmapon=0
                             else
                                 echo "... not an option"
                                 echo "exiting NMAP ..."
