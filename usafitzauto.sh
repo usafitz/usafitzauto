@@ -130,8 +130,11 @@ function nmap_single_host {
     for host_ip in $(cat ./output_files/nmap/$DATENMAP/hostsup.txt)
         do
             sudo nmap -A -T4 -p- -sS $host_ip -oN ./output_files/nmap/$DATENMAP/common_$host_ip.txt &
+            echo "EXECUTING NMAP COMMON..."
             nmap -sU -O $host_ip -oN ./output_files/nmap/$DATENMAP/udp_$host_ip.txt &
+            echo "EXECUTING NMAP UDP..."
             nmap -sV -vv -p- --script vuln $host_ip -oN ./output_files/nmap/$DATENMAP/nse_$host_ip.txt &
+            echo "EXECUTING NMAP VULN..."
         done   
     echo "ALL SCANS COMPLETE... RETURNING TO MENU."
 }
