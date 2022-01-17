@@ -230,11 +230,11 @@ while [ $exitoption = 0 ]
                                     nmapon=1  
                             elif [[ $namppreference = 5 ]] # BACKGROUND THE THREE SCANS
                                 then      
+                                    nmap_find_hosts
                                     nmap_single_host
                                     nmapon=1
                             elif [[ $namppreference = 6 ]] # CHANGE NAMES IF KNOWN WINDOWS
                                 then
-                                    nmap_find_hosts
                                     nmap_changename
                                     nmapon=1
                             elif [[ $namppreference = 7 ]] # RETURN TO MAIN MENU
