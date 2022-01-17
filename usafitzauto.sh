@@ -234,8 +234,9 @@ while [ $exitoption = 0 ]
                                     nmapon=1
                             elif [[ $namppreference = 6 ]] # CHANGE NAMES IF KNOWN WINDOWS
                                 then
+                                    nmap_find_hosts
                                     nmap_changename
-                                    nmapon=0
+                                    nmapon=1
                             elif [[ $namppreference = 7 ]] # RETURN TO MAIN MENU
                                 then
                                     nmapon=0
