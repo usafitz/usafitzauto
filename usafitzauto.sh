@@ -52,7 +52,7 @@ function nmap_common { # TCP SYN SCAN (REQUIRES SUDO | QUICK AND EASY)
         do
             echo "  "
             echo "STARTING COMMON NMAP OF:  $host_ip"
-            sudo nmap -A -T4 -p- -sS $host_ip -oG ./output_files/nmap/$DATENMAP/common_$host_ip.txt  # >> ./output_files/nmap/$DATENMAP/common/$host_ip.txt
+            sudo nmap -A -T4 -p- -sS $host_ip -oN ./output_files/nmap/$DATENMAP/common_$host_ip.txt  # >> ./output_files/nmap/$DATENMAP/common/$host_ip.txt
             echo "COMPLETE NMAP OF:  $host_ip "
             # cat ./output_files/nmap/$DATENMAP/common/$host_ip.txt
             # if [[ $(cat ./output_files/nmap/$DATENMAP/common_$host_ip.txt | grep "Windows") == *"Windows"* ]] 
@@ -70,7 +70,7 @@ function nmap_nse { # NMAP SCRIPTING ENGINE (NSE)
         do
             echo "  "
             echo "STARTING NMAP SCRIPT ENGINE SCAN OF:  $host_ip"
-            nmap -sV -vv -p- --script vuln $host_ip -oG ./output_files/nmap/$DATENMAP/nse_$host_ip.txt  # >> ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
+            nmap -sV -vv -p- --script vuln $host_ip -oN ./output_files/nmap/$DATENMAP/nse_$host_ip.txt  # >> ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
             echo "COMPLETE NMAP OF:  $host_ip "
             # cat ./output_files/nmap/$DATENMAP/nse_$host_ip.txt
             # if [[ $(cat ./output_files/nmap/$DATENMAP/nse_$host_ip.txt | grep "Windows") == *"Windows"* ]] 
@@ -90,7 +90,7 @@ function nmap_udp { # NMAP CHECK FOR UDP
         do
             echo "  "
             echo "STARTING NMAP SCRIPT ENGINE SCAN OF:  $host_ip"
-            nmap -sU -O -oA nmap/udp $host_ip -oG ./output_files/nmap/$DATENMAP/udp_$host_ip.txt  # >> ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
+            nmap -sU -O -oA nmap/udp $host_ip -oN ./output_files/nmap/$DATENMAP/udp_$host_ip.txt  # >> ./output_files/nmap/$DATENMAP/nse/$host_ip.txt
             echo "COMPLETE NMAP OF:  $host_ip "
             # cat ./output_files/nmap/$DATENMAP/udp_$host_ip.txt
             # if [[ $(cat ./output_files/nmap/$DATENMAP/udp_$host_ip.txt | grep "Windows") == *"Windows"* ]] 
