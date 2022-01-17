@@ -126,6 +126,16 @@ function nmap_changename { # CHANGE NAME TO INCLUDE WINDOWS IF KNOWN
         echo "  "
 }
 
+function nmap_single_host {
+    for host_ip in $(cat ./output_files/nmap/$DATENMAP/hostsup.txt)
+        do
+            sudo nmap -A -T4 -p- -sS $host_ip -oN ./output_files/nmap/$DATENMAP/common_$host_ip.txt &
+            nmap -sU -O -oA nmap/udp $host_ip -oN ./output_files/nmap/$DATENMAP/udp_$host_ip.txt &
+            nmap -sV -vv -p- --script vuln $host_ip -oN ./output_files/nmap/$DATENMAP/nse_$host_ip.txt &
+        done   
+    echo "ALL SCANS COMPLETE... RETURNING TO MENU."
+}
+
 nmap -sU -O -oA nmap/udp
 
 while [ $exitoption = 0 ]
@@ -187,7 +197,9 @@ while [ $exitoption = 0 ]
                         echo "2 High Enumeration "
                         echo "3 UDP scan"
                         echo "4 Run All Scans (overnight) "
-                        echo "5 Find Windows Targets - rename file "
+                        echo "5 SINGLE HOST - run all - background"
+                        echo "6 Find Windows Targets - rename file "
+                        echo "7 RETURN TO MAIN MENU "
                         echo "  "
                         read -p "YOUR SELECTION:  " namppreference
                         echo "  "
@@ -216,9 +228,16 @@ while [ $exitoption = 0 ]
                                     nmap_udp
                                     nmap_nse
                                     nmapon=1  
-                            elif [[ $namppreference = 5 ]] # CHANGE NAMES IF KNOWN WINDOWS
+                            elif [[ $namppreference = 5 ]] # BACKGROUND THE THREE SCANS
                                 then      
+                                    nmap_single_host
+                                    nmapon=1
+                            elif [[ $namppreference = 6 ]] # CHANGE NAMES IF KNOWN WINDOWS
+                                then
                                     nmap_changename
+                                    nmapon=0
+                            elif [[ $namppreference = 7 ]] # RETURN TO MAIN MENU
+                                then
                                     nmapon=0
                             else
                                 echo "... not an option"
