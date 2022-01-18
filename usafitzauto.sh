@@ -20,16 +20,15 @@ function quit {
 	exit
 }
 
-# NMAP FUNCTION SECTION ..
+# CREATE FOLDERS 
 
-function nmap_setup { # CREATE FOLDER / CALL COMMANDS
+function setup { # CREATE FOLDER / CALL COMMANDS
     DATENMAP=$(date +%Y%b%d-%T) 
     # echo " within nmap_setup: $DATENMAP"
     mkdir ./output_files/nmap
+    mkdir ./output_files/dirb
     mkdir ./output_files/nmap/$DATENMAP
-    # mkdir ./output_files/nmap/$DATENMAP/common
-    # mkdir ./output_files/nmap/$DATENMAP/nse
-
+    mkdir ./output_files/dirb/$DATENMAP
 }
 
 function nmap_find_hosts { # SCAN NETWORK FOR HOSTS THAT ARE UP
@@ -139,7 +138,7 @@ function nmap_single_host {
     echo "ALL SCANS COMPLETE... RETURNING TO MENU."
 }
 
-nmap -sU -O -oA nmap/udp
+# DIRB:  dirb http://$ip /usr/share/dirb/wordlists/common.txt -N -w -o dirb_$IP.txt  
 
 while [ $exitoption = 0 ]
     do
