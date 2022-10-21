@@ -326,3 +326,11 @@ while [ $exitoption = 0 ]
 #done
 
 quit
+
+# FROM HTB... BUT USE THIS TO CHECK FOR THE NMAP DIRECTORY AND CREATE IT
+#if [ -s log/photobomb.log ] && ! [ -L log/photobomb.log ]
+#then
+#  /bin/cat log/photobomb.log > log/photobomb.log.old
+#  /usr/bin/truncate -s0 log/photobomb.log
+#fi
+
