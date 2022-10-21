@@ -22,7 +22,7 @@ function quit {
 
 # CREATE FOLDERS 
 
-function setup { # CREATE FOLDER / CALL COMMANDS
+function nmap_setup { # CREATE FOLDER / CALL COMMANDS
     DATENMAP=$(date +%Y%b%d-%T) 
     # echo " within nmap_setup: $DATENMAP"
     mkdir ./output_files/nmap
